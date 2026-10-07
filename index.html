@@ -261,29 +261,45 @@ window.addEventListener('hashchange',function(){window.arteNavSet()});
 window.arteNavSet();
 })();</script>
 <!--/ARTE-BAR-->
-<style id="arteFrameCss">/* 공통 화면 틀: 회색 배경 + 흰 본문 카드 + 로고 좌측 */html,body{background:#eeefef!important}body>.wrap{max-width:1536px!important;margin-left:auto!important;margin-right:auto!important;box-sizing:border-box!important;background:#fff!important;margin-top:24px!important;margin-bottom:40px!important;padding:27px 52px 48px!important}</style>
+<style id="arteFrameCss">/* 공통 화면 틀: 회색 배경 + 흰 본문 카드 + 로고 좌측 */html,body{background:#eeefef!important}body>.wrap{max-width:1536px!important;margin-left:auto!important;margin-right:auto!important;box-sizing:border-box!important;background:#fff!important;margin-top:24px!important;margin-bottom:40px!important;padding:27px 52px 48px!important}</style><style id="atLayoutCss">/* 한 화면 보기: 장소 탭은 제목 오른쪽, 조명 종류 왼쪽 · 사진 가운데 · 스위치 오른쪽 */
+.hrow{display:flex;align-items:center;gap:28px;flex-wrap:wrap}
+.hrow .tabs{position:static;margin:0;max-width:none;flex:1 1 auto;box-shadow:none;backdrop-filter:none;background:#fff}
+header p{margin-top:10px!important}
+.layout{display:grid;grid-template-columns:230px minmax(0,1fr) 210px;gap:16px;align-items:start}
+.layout .itembar{margin:0;position:sticky;top:calc(var(--anav-h,63px) + 12px);padding:14px;border-radius:16px;max-height:calc(100vh - var(--anav-h,63px) - 30px);overflow-y:auto}
+.layout .itembar-title{font-size:11px;padding:2px 4px 9px;margin:0}
+.layout .itemrow{flex-direction:column;flex-wrap:nowrap;gap:7px}
+.layout .item{white-space:normal;width:100%;padding:8px 12px;line-height:1.4}
+.layout .item span{font-size:11px;margin-left:5px}
+.layout .switchpanel{top:calc(var(--anav-h,63px) + 12px)}
+@media (max-width:800px){
+ .hrow{flex-direction:column;align-items:stretch;gap:10px}
+ .hrow .tabs{flex:none;max-width:100%;min-width:0}
+ .layout{display:flex;flex-direction:column;gap:10px}
+ .layout .itembar{order:0;position:static;max-height:none;padding:10px 10px 10px 12px;border-radius:12px}
+ .layout .itemrow{flex-direction:row;overflow-x:auto}
+ .layout .item{white-space:nowrap;width:auto}
+ .layout .item span{margin-left:6px}
+ .stage-wrap{width:100%}
+ .stage-wrap{order:1}.layout .switchpanel{order:2}
+ .layout>*,.hrow>*{min-width:0;max-width:100%}
+ body>.wrap{padding:18px 14px 32px!important}
+}</style>
 
 
 <div class="wrap">
   <header>
-    <div class="at-ttl"><div class="r"><span class="a">ARTE</span><span class="t">조명 색변환 체험</span></div><small>LIGHTING · COLOR EXPERIENCE</small></div>
+    <div class="hrow"><div class="at-ttl"><div class="r"><span class="a">ARTE</span><span class="t">조명 색변환 체험</span></div><small>LIGHTING · COLOR EXPERIENCE</small></div>
+    <div class="tabs" id="tabs"></div></div>
     <p>공간을 선택하고, 조명 종류와 스위치를 눌러 색온도 변화를 비교해 보세요</p>
     <span class="accent"></span>
   </header>
 
-  <div class="tabs" id="tabs"></div>
-
+  <div class="layout">
   <div class="itembar" id="itembar">
     <div class="itembar-title">조명 종류</div>
     <div class="itemrow" id="itemRow"></div>
   </div>
-
-  <div class="layout">
-    <div class="switchpanel" id="switchpanel">
-      <div class="switchpanel-title">Switch</div>
-      <div class="swcol" id="swcol"></div>
-      <button class="addsw edit-only" id="addSwBtn">+ 스위치(사진) 추가</button>
-    </div>
     <div class="stage-wrap">
       <div class="viewer">
         <div class="stage" id="stage"><div class="badge" id="badge"></div><div class="copyhint">클릭하면 이미지 복사</div><button class="copybtn" id="copyBtn" title="이미지 복사">⧉ 복사</button></div>
@@ -292,6 +308,11 @@ window.arteNavSet();
           <p id="tDesc"></p>
         </div>
       </div>
+    </div>
+    <div class="switchpanel" id="switchpanel">
+      <div class="switchpanel-title">Switch</div>
+      <div class="swcol" id="swcol"></div>
+      <button class="addsw edit-only" id="addSwBtn">+ 스위치(사진) 추가</button>
     </div>
   </div>
 
