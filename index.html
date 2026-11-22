@@ -663,5 +663,47 @@ function doExport(){
 
 render();
 </script>
+<script id="realviewLink">
+/* 실사 조명 체험 앱 연결: #exp=카테고리/조명종류&k=4000&t=night&from=단지·타입·조명 */
+(function(){
+  var norm=function(s){return String(s||'').replace(/\s+/g,'').toLowerCase();};
+  function findIdx(arr,key,val){var n=norm(val),i=arr.findIndex(function(x){return norm(x[key])===n;});
+    if(i<0&&n)i=arr.findIndex(function(x){var m=norm(x[key]);return m&&(m.indexOf(n)>=0||n.indexOf(m)>=0);});return i;}
+  function banner(from){
+    var b=document.getElementById('rvBanner');
+    if(!b){b=document.createElement('div');b.id='rvBanner';
+      b.style.cssText='position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:9999;display:flex;gap:10px;align-items:center;background:#fff;border:1px solid #E6EBF0;border-left:4px solid #8FC7E8;border-radius:12px;padding:10px 12px 10px 14px;box-shadow:0 6px 24px rgba(31,42,55,.14);font-size:13px;color:#1F2A37;max-width:calc(100vw - 24px)';
+      document.body.appendChild(b);}
+    b.innerHTML='<span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap"><b style="color:#4F9CC9">실사 조명 체험</b>에서 연결 · </span>';
+    var t=document.createElement('span');t.style.cssText='overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:700';t.textContent=from;b.appendChild(t);
+    var bt=document.createElement('button');bt.textContent='← 돌아가기';
+    bt.style.cssText='border:1px solid #8FC7E8;background:#F2F9FD;color:#24607F;border-radius:8px;padding:6px 10px;font:inherit;font-weight:700;cursor:pointer;white-space:nowrap';
+    bt.onclick=function(){ if(window.opener&&!window.opener.closed){window.close();} else if(history.length>1){history.back();} else {b.remove();} };
+    var x=document.createElement('button');x.textContent='✕';x.setAttribute('aria-label','닫기');
+    x.style.cssText='border:0;background:none;color:#9AA5B1;font-size:14px;cursor:pointer;padding:4px';x.onclick=function(){b.remove();};
+    b.appendChild(bt);b.appendChild(x);
+  }
+  function apply(){
+    var h=location.hash.replace(/^#/,''); if(h.indexOf('exp=')<0) return;
+    var q=new URLSearchParams(h), exp=q.get('exp')||'', cut=exp.indexOf('/');
+    var cn=cut<0?exp:exp.slice(0,cut), il=cut<0?'':exp.slice(cut+1);
+    var ci=findIdx(CATS,'name',cn); if(ci<0) return;
+    var ii=il?findIdx(CATS[ci].items,'label',il):0; if(ii<0) ii=0;
+    curCat=ci; curItem=ii; render();
+    var it=CATS[ci].items[ii]; if(!it) return;
+    var k=q.get('k'), t=q.get('t'), modes=it.modes||[];
+    var tw=t==='night'?'밤':t==='day'?'낮':'';
+    var score=function(m){var s=0,kv=String(m.kelvin||m.sub||'');
+      if(k&&kv.indexOf(k)===0)s+=2; if(tw&&((m.name||'')+(m.group||'')).indexOf(tw)>=0)s+=1; if(m.on===false)s-=3; return s;};
+    var best=-1,bs=-99; modes.forEach(function(m,i){var s=score(m); if(s>bs){bs=s;best=i;}});
+    if(best>=0&&(k||tw)) selectMode(best);
+    var a=document.querySelector('#itemRow .item.active'); if(a&&a.scrollIntoView) a.scrollIntoView({block:'nearest',inline:'center'});
+    if(q.get('from')) banner(q.get('from'));
+  }
+  if(typeof doExport==='function'){var _ex=doExport;doExport=function(){var b=document.getElementById('rvBanner');if(b)b.remove();return _ex.apply(this,arguments);};}
+  window.addEventListener('hashchange',apply);
+  apply();
+})();
+</script>
 </body>
 </html>
